@@ -41,15 +41,18 @@ Once that's running, you can use the ngrok URL as a webhook URL in Advanced Expo
 
 ### How to use data from JSON report
 
-The example app contains exammple code to calculate statistics for times spent in Statuses.
+The example app contains example code to calculate statistics for times spent in Statuses - see [stats.ts](src/stats.ts).
 
 Provided:
 
 - you have a webhook server running locally
 - you've exposed local server via ngrok tunnel
 - you have a report which exports "Status" column with history export enabled:
+
 ![Status history export](docs/status-history-export-config.png)
+
 - you have a webhook URL (1) configured in the schedule for that report
+
 ![Schedule webhook configuration](docs/schedule-webhook-url.png)
 
 You can save the schedule (2) and press Execute now (3).
