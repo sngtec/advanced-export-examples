@@ -37,7 +37,15 @@ npm run ngrok
 
 Once that's running, you can use the ngrok URL as a webhook URL in Advanced Export (see [Advanced Export documentation](https://docs.kanbanalytics.com/atlassian/advanced-export/scheduled-exports)).
 
-`https://[NGROK_TUNNEL]/upload`
+For example:
+
+- to calculate example stats from the JSON data:
+
+    https://[NGROK_TUNNEL]/upload/json_status_lead_times?statusFieldId=status
+
+- to save a file if the report output is a file (e.g. XLSX or CSV):
+
+    https://[NGROK_TUNNEL]/file
 
 ### How to use data from JSON report
 
@@ -51,7 +59,9 @@ Provided:
 
 ![Status history export](docs/status-history-export-config.png)
 
-- you have a webhook URL (1) configured in the schedule for that report, and **the report format is set to JSON**
+- you have a webhook URL (1) configured in the schedule for that report, and **the report format is set to JSON**:
+
+    `https://[NGROK_TUNNEL]/upload/json_status_lead_times?statusFieldId=status`
 
 ![Schedule webhook configuration](docs/schedule-webhook-url.png)
 
@@ -66,6 +76,31 @@ Selected for Development | 5d 8h 26m 55s | 5d 8h 26m 55s | 5d 8h 26m 55s
 Backlog | 433d 21h 20m 53s | 650d 9h 49m 39s | 650d 10h 3m 8s
 To Do | 1660d 4h 17m 30s | 2372d 5h 52m 43s | 2372d 5h 52m 44s
 Done | 1738d 10h 5m 56s | 2379d 15h 2m 45s | 2393d 16h 12m 45s
+
+#### Other examples
+
+##### Group and accumulate
+
+Example usage of this would be velocity chart, where you group by spring and accumulate story point values using `sum` function.
+
+Example report setup (to export all the sprints for project SSP). Note we're not exporting histories here, and there's only 2 fields - Sprint and a numerical value we want to summarise - Story Points:
+
+![Velocity chart export](docs/velocity-export-config.png)
+
+Note, that webhook URL has to use field ids, not field names:
+
+`https://[NGROK_TUNNEL]/upload/json_group_acc?valueFieldId=customfield_10009&groupByFieldId=customfield_10004&accFunction=sum`
+
+You can use other accumulation method implemented in the example: `sum`, `avg`, `median`, `90percentile`.
+
+Example output:
+
+Sprint | sum(Story Points)
+---|---
+Sample Sprint 1 | 16
+Sample Sprint 2 | 12
+Sample Sprint 3 | 14
+
 
 ## Support
 

@@ -8,9 +8,20 @@ type Row = {
     ae_asOf: string;
     ae_changedFields: string;
     ae_changeAuthor: string | null;
-    status: string;
     ae_timeToNextChange: number;
+    [key: string]: string | number | null;
 };
+
+type Column = {
+    id: string;
+    displayName: string;
+    unsupported: boolean;
+    special: boolean;
+    type: string;
+};
+
+export const ACC_FUNCTIONS = ["sum", "avg", "median", "90percentile"] as const;
+export type AccFunction = (typeof ACC_FUNCTIONS)[number];
 
 export function timesInStatuses(statusFieldId: keyof Row, timeFieldId: keyof Row, rows: Row[]): Map<string, number[]> {
     const timesPerStatus = new Map<string, number[]>();
@@ -68,6 +79,57 @@ export function printStats(timesPerStatus: Map<string, number[]>) {
   ${status} | ${secondsToDaysHoursMinutes(avg)} | ${secondsToDaysHoursMinutes(
             medianSecondsPerStatus.get(status)
         )} | ${secondsToDaysHoursMinutes(percentile90SecondsPerStatus.get(status))}`;
+    }
+    console.log(table);
+}
+
+export function groupByAndAccumulate(
+    rows: Row[],
+    columns: Column[],
+    groupByFieldId: keyof Row,
+    valueFieldId: keyof Row,
+    accFunction: AccFunction
+) {
+    const groupByColumn = columns.find(c => c.id === groupByFieldId)!;
+    const valueColumn = columns.find(c => c.id === valueFieldId)!;
+
+    const groups = new Map<string, number[]>();
+    for (const row of rows) {
+        const group = row[groupByFieldId] as string;
+        const value = +row[valueFieldId]! || 0;
+        if (groups.has(group)) {
+            groups.get(group)!.push(value);
+        } else {
+            groups.set(group, [value]);
+        }
+    }
+
+    const accs = new Map<string, number>();
+    for (const [group, values] of groups.entries()) {
+        if (accFunction === "sum") {
+            accs.set(
+                group,
+                values.reduce((a, b) => a + b, 0)
+            );
+        } else if (accFunction === "avg") {
+            accs.set(group, values.reduce((a, b) => a + b, 0) / values.length);
+        } else if (accFunction === "median") {
+            values.sort((a, b) => a - b);
+            const mid = Math.floor(values.length / 2);
+            accs.set(group, values[mid]);
+        } else if (accFunction === "90percentile") {
+            values.sort((a, b) => a - b);
+            const mid = Math.floor(values.length * 0.9);
+            accs.set(group, values[mid]);
+        }
+    }
+
+    let table = `
+${groupByColumn.displayName} | ${accFunction}(${valueColumn.displayName})
+---|---`;
+    for (const [group, acc] of accs.entries()) {
+        table += `
+${group} | ${acc}`;
     }
     console.log(table);
 }
