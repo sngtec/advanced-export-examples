@@ -1,9 +1,9 @@
 # advanced-export-examples
 
-A set of examples related to Advanced Export app
+A set of examples related to [Advanced Export](https://marketplace.atlassian.com/apps/1217474/advanced-export?hosting=cloud&tab=overview) app for Atlassian Jira.
 
-[Documentation](https://docs.kanbanalytics.com/atlassian/advanced-export)
-[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1217474/advanced-export?hosting=cloud&tab=overview)
+- [Documentation](https://docs.kanbanalytics.com/atlassian/advanced-export)
+- [Atlassian Marketplace](https://marketplace.atlassian.com/apps/1217474/advanced-export?hosting=cloud&tab=overview)
 
 ## Webhooks
 
