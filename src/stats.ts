@@ -1,8 +1,22 @@
-export function timesInStatuses(statusFieldId: string, timeFieldId: string, rows: any[]): Map<string, number[]> {
+//
+// Note:
+// Example format of JSON data received by the webhook can be found in docs/example-webhook-data.json
+//
+
+type Row = {
+    issuekey: string;
+    ae_asOf: string;
+    ae_changedFields: string;
+    ae_changeAuthor: string | null;
+    status: string;
+    ae_timeToNextChange: number;
+};
+
+export function timesInStatuses(statusFieldId: keyof Row, timeFieldId: keyof Row, rows: Row[]): Map<string, number[]> {
     const timesPerStatus = new Map<string, number[]>();
     for (const row of rows) {
-        const status = row[statusFieldId];
-        const time = +row[timeFieldId] || 0;
+        const status = row[statusFieldId] as string;
+        const time = +row[timeFieldId]! || 0;
         if (timesPerStatus.has(status)) {
             timesPerStatus.get(status)!.push(time);
         } else {
