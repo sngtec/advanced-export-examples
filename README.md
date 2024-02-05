@@ -51,7 +51,7 @@ Provided:
 
 ![Status history export](docs/status-history-export-config.png)
 
-- you have a webhook URL (1) configured in the schedule for that report
+- you have a webhook URL (1) configured in the schedule for that report, and **the report format is set to JSON**
 
 ![Schedule webhook configuration](docs/schedule-webhook-url.png)
 
